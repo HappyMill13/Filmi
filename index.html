@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Что посмотреть</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 16px;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #eef2f7;
+            color: #1f2a37;
+        }
+
+        .app {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 28px 32px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(31, 42, 55, 0.08);
+        }
+
+        h1 {
+            margin: 0 0 20px;
+            font-size: 24px;
+        }
+
+        .form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            margin-bottom: 24px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1 1 180px;
+        }
+
+        .field label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .field input {
+            padding: 9px 12px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        #addMovie {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #2563eb;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #addMovie:hover {
+            background: #1d4ed8;
+        }
+
+        /* Список фильмов */
+        #movieList {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        #movieList li {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+
+        #movieList img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: #e5e7eb;
+        }
+
+        #movieList span {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 500;
+            overflow-wrap: anywhere;
+        }
+
+        #movieList button {
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #b91c1c;
+            background: #fee2e2;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+
+        #movieList button:hover {
+            background: #fecaca;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <h1>Что посмотреть</h1>
+
+        <div class="form">
+            <div class="field">
+                <label for="movieName">Название фильма</label>
+                <input id="movieName" type="text">
+            </div>
+            <div class="field">
+                <label for="moviePoster">Ссылка на обложку</label>
+                <input id="moviePoster" type="text" placeholder="https://…">
+            </div>
+            <button id="addMovie" type="button">Добавить</button>
+        </div>
+
+        <ul id="movieList"></ul>
+    </div>
+
+    <script>
+        const movieTitles = [
+            'Русские космические станции',
+            'Тайна дома с часами',
+            'Полярный экспресс',
+        ];
+        const moviePosters = [
+            '295de8e9616bec1e79acda3b187650e0.jpg',
+            'orig.webp',
+            '6ce324b5b52e4c0e275151d01699bdac.jpg',
+        ];
+
+        const movieList = document.getElementById('movieList');
+        const movieNameInput = document.getElementById('movieName');
+        const moviePosterInput = document.getElementById('moviePoster');
+        const addMovieButton = document.getElementById('addMovie');
+
+        function renderMovies() {
+            movieList.innerHTML = '';
+
+            movieTitles.forEach((movieTitle, index) => {
+                const item = document.createElement('li');
+
+                const poster = document.createElement('img');
+                poster.src = moviePosters[index];
+                poster.alt = '';
+                poster.width = 64;
+
+                const title = document.createElement('span');
+                title.textContent = movieTitle;
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.textContent = 'Удалить';
+
+                removeButton.addEventListener('click', () => {
+                    movieTitles.splice(index, 1);
+                    moviePosters.splice(index, 1);
+                    renderMovies();
+                });
+
+                item.append(poster, title, removeButton);
+                movieList.append(item);
+            });
+        }
+
+        addMovieButton.addEventListener('click', () => {
+            const name = movieNameInput.value.trim();
+            const posterUrl = moviePosterInput.value.trim();
+
+            if (!name || !posterUrl) {
+                return;
+            }
+
+            movieTitles.push(name);
+            moviePosters.push(posterUrl);
+
+            movieNameInput.value = '';
+            moviePosterInput.value = '';
+
+            renderMovies();
+        });
+
+        renderMovies();
+    </script>
+</body>
+
+</html>
